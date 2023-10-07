@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Term V30</string>
+
+    <string name="notification_channel_name">notification channel name</string>
+    <string name="notification_channel_description">notification channel description</string>
+
 </resources>
