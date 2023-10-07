@@ -1,8 +1,10 @@
-package com.example.termv30;
+package com.example.termv30.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.termv30.R;
 
 public class MainActivity extends AppCompatActivity {
 
