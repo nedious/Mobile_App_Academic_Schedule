@@ -11,6 +11,6 @@
         style="@style/word_title"
         android:background="@android:color/holo_green_light"
         android:text="Assessment" />
-        />
+
 
 </LinearLayout>
