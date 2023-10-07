@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/share_notes"
+        android:orderInCategory="100"
+        android:title="Email Course Notes"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/show_notes"
+        android:orderInCategory="100"
+        android:title="Display Course Notes"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/course_notification_start"
+        android:orderInCategory="100"
+        android:title="Set Notification Course Start Date"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/course_notification_end"
+        android:orderInCategory="100"
+        android:title="Set Notification Course End Date"
+        app:showAsAction="never" />
+</menu>
