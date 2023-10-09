@@ -82,7 +82,7 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
         }
 
         if (termID == -1) {
-            termID = ActivityAssessmentDetail.termIdAssEditPage;
+            termID = ActivityAssessmentDetail.termIdAssessmentDetail;
         }
 
         // below, repository enters fields, so long as its not creating a new Entity.
@@ -287,7 +287,7 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
         professorName.getText().toString().trim().isEmpty() ||
         professorPhone.getText().toString().trim().isEmpty() ||
         professorPhone.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "All fields must be filled prior to saving Course", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error: Empty Fields", Toast.LENGTH_LONG).show();
             return;
         }
 
