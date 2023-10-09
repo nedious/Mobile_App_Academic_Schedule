@@ -48,6 +48,7 @@ public class ActivityTermHome extends AppCompatActivity {
                 return false;
             }
 
+            // deletes term if no courses are assigned to it
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 for (CourseEntity course: repository.getAllCourses()){
