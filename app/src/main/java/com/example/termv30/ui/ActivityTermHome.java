@@ -69,7 +69,7 @@ public class ActivityTermHome extends AppCompatActivity {
             Toast.makeText(this,"Term Saved",Toast.LENGTH_LONG).show();
     }
 
-    public void goToTermEditCourseList(View view) {
+    public void addNewTermButton(View view) {
         Intent intent = new Intent(ActivityTermHome.this, ActivityTermDetail.class);
         startActivity(intent);
     }

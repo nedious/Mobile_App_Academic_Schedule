@@ -273,10 +273,7 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
     }
 
     public void addAssessmentButton(View view) {
-//        if (numberAssessments > 4){
-//            Toast.makeText(this, "Each course can only have a maximum of 5 Assessments", Toast.LENGTH_LONG).show();
-//            return;
-//        }
+
         Intent intent = new Intent(ActivityCourseDetail.this, ActivityAssessmentDetail.class);
         intent.putExtra("courseID", courseID);
         intent.putExtra("termID", termID);

@@ -117,14 +117,14 @@ public class ActivityTermDetail extends AppCompatActivity {
     }
 
 
-    public void goToCourseEditAssessmentList(View view) {
+    public void addNewCourseButton(View view) {
         Intent intent = new Intent(ActivityTermDetail.this, ActivityCourseDetail.class);
         intent.putExtra("termID", id);
         ActivityAssessmentDetail.courseIdAssessmentDetail = -1;
         startActivity(intent);
     }
 
-    public void addTermFromScreen(View view) {
+    public void saveTermButton(View view) {
         if (editTitle.getText().toString().trim().isEmpty() || editStartDate.getText().toString().trim().isEmpty() || editEndDate.getText().toString().isEmpty()) {
             Toast.makeText(this, "All fields must be filled prior to saving Term", Toast.LENGTH_LONG).show();
             return;

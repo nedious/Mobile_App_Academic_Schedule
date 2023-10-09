@@ -134,7 +134,7 @@ public class ActivityAssessmentDetail extends AppCompatActivity {
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
-    public void addAssessmentFromScreen(View view) {
+    public void saveAssessmentButton(View view) {
         if (assessmentTitle.getText().toString().trim().isEmpty() || startDate.getText().toString().trim().isEmpty() || endDate.getText().toString().trim().isEmpty() || (!OARadio.isChecked() && !PARadio.isChecked())){
             Toast.makeText(this, "All fields must be filled prior to saving Assessment", Toast.LENGTH_LONG).show();
             return;
