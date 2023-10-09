@@ -184,18 +184,6 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
             return true;
         }
 
-//        if (id == R.id.course_notification_start) {
-//            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.course_details), "Notification for Start date Set", Snackbar.LENGTH_LONG);
-//            mySnackbar.show();
-//            Intent intentStart = new Intent(ActivityCourseDetail.this, MyReceiver.class);
-//            intentStart.putExtra("courseAlert"," The Course: '" + courseTitle.getText().toString() + "' start date notification has been set.");
-//            PendingIntent senderStart = PendingIntent.getBroadcast(ActivityCourseDetail.this,++numAlert,intentStart, PendingIntent.FLAG_IMMUTABLE);
-//            AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
-//            long startDateMillis = DateHelper.parseDate(startDate.getText().toString()).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
-//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, startDateMillis, senderStart);
-//            return true;
-//        }
-
         if (item.getItemId() == R.id.course_notification_start) {
             String dateFromScreen = startDate.getText().toString();
             String myFormat = "MM/dd/yy";
@@ -214,19 +202,6 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
             alarmManager.set(AlarmManager.RTC_WAKEUP, trigger,sender);
             return true;
         }
-
-
-//        if (id == R.id.course_notification_end) {
-//            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.course_details), "Notification for End date Set", Snackbar.LENGTH_LONG);
-//            mySnackbar.show();
-//            Intent intentEnd = new Intent(ActivityCourseDetail.this, MyReceiver.class);
-//            intentEnd.putExtra("courseAlert","The Course: '" + courseTitle.getText().toString() + "' end date notification has been set.");
-//            PendingIntent senderEnd = PendingIntent.getBroadcast(ActivityCourseDetail.this,++numAlert,intentEnd, PendingIntent.FLAG_IMMUTABLE);
-//            AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
-//            long endDateMillis = DateHelper.parseDate(endDate.getText().toString()).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
-//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, endDateMillis, senderEnd);
-//            return true;
-//        }
 
         if (item.getItemId() == R.id.course_notification_end) {
             String dateFromScreen = endDate.getText().toString();

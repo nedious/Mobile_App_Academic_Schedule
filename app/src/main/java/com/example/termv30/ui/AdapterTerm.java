@@ -16,7 +16,7 @@ import com.example.termv30.entities.TermEntity;
 
 import java.util.List;
 
-public class AdapterTerm extends RecyclerView.Adapter<AdapterTerm.TermViewHolder> {
+public class AdapterTerm extends RecyclerView.Adapter<AdapterTerm.TermsViewHolder> {
 
     private final LayoutInflater mInflater;
     private final Context context;
@@ -29,14 +29,14 @@ public class AdapterTerm extends RecyclerView.Adapter<AdapterTerm.TermViewHolder
         this.context = context;
     }
 
-    class TermViewHolder extends RecyclerView.ViewHolder {
-        private final TextView termItemView;
-        private final TextView courseItemList;
+    class TermsViewHolder extends RecyclerView.ViewHolder {
+        private final TextView termsItemView;
+        private final TextView coursesItemList;
 
-        private TermViewHolder(View itemView){
+        private TermsViewHolder(View itemView){
             super(itemView);
-            termItemView = itemView.findViewById(R.id.item_term_title_textView);
-            courseItemList = itemView.findViewById(R.id.item_term_course_list_textView);
+            termsItemView = itemView.findViewById(R.id.item_term_title_textView);
+            coursesItemList = itemView.findViewById(R.id.item_term_course_list_textView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
 
@@ -55,30 +55,30 @@ public class AdapterTerm extends RecyclerView.Adapter<AdapterTerm.TermViewHolder
     }
 
     @Override
-    public TermViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TermsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.item_term_list, parent, false);
-        return new TermViewHolder(itemView);
+        return new TermsViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TermViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TermsViewHolder holder, int position) {
 
         if(mTerms != null) {
             final TermEntity currentTerm = mTerms.get(position);
-            holder.termItemView.setText((currentTerm.getTermTitle()));
+            holder.termsItemView.setText((currentTerm.getTermTitle()));
 
-            String filteredCourseEntityList = "";
+            String coursesPerTerm = "";
             for(CourseEntity course: mCourses) {
                 if (course.getTermID() == currentTerm.getTermID())
-                    filteredCourseEntityList = filteredCourseEntityList + course.getCourseTitle() + "\n";
+                    coursesPerTerm = coursesPerTerm + course.getCourseTitle() + "\n";
             }
-            if (filteredCourseEntityList != "")
-                holder.courseItemList.setText(filteredCourseEntityList);
+            if (coursesPerTerm != "")
+                holder.coursesItemList.setText(coursesPerTerm);
             else
-                holder.courseItemList.setVisibility(View.GONE);
+                holder.coursesItemList.setVisibility(View.GONE);
 
         } else {
-            holder.termItemView.setText("no text");
+            holder.termsItemView.setText("no text");
         }
     }
 

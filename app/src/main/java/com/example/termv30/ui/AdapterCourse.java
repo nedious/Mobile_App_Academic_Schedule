@@ -16,7 +16,7 @@ import com.example.termv30.entities.CourseEntity;
 
 import java.util.List;
 
-public class AdapterCourse extends RecyclerView.Adapter<AdapterCourse.CourseViewHolder> {
+public class AdapterCourse extends RecyclerView.Adapter<AdapterCourse.CoursesViewHolder> {
 
     private final LayoutInflater mInflater;
     private final Context context;
@@ -28,14 +28,14 @@ public class AdapterCourse extends RecyclerView.Adapter<AdapterCourse.CourseView
         this.context = context;
     }
 
-    class CourseViewHolder extends RecyclerView.ViewHolder {
-        private final TextView courseItemView;
-        private final TextView assessmentItemView;
+    class CoursesViewHolder extends RecyclerView.ViewHolder {
+        private final TextView coursesItemView;
+        private final TextView assessmentsItemView;
 
-        private CourseViewHolder(View itemView){
+        private CoursesViewHolder(View itemView){
             super(itemView);
-            courseItemView = itemView.findViewById(R.id.item_course_textView);
-            assessmentItemView = itemView.findViewById(R.id.item_course_assessment_list_textView);
+            coursesItemView = itemView.findViewById(R.id.item_course_textView);
+            assessmentsItemView = itemView.findViewById(R.id.item_course_assessment_list_textView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick (View v) {
@@ -53,29 +53,29 @@ public class AdapterCourse extends RecyclerView.Adapter<AdapterCourse.CourseView
 
     @NonNull
     @Override
-    public CourseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CoursesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.item_course_list, parent, false);
-        return new CourseViewHolder(itemView);
+        return new CoursesViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CourseViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CoursesViewHolder holder, int position) {
         if(mCourses != null) {
             final CourseEntity currentCourse = mCourses.get(position);
-            holder.courseItemView.setText((currentCourse.getCourseTitle()));
+            holder.coursesItemView.setText((currentCourse.getCourseTitle()));
 
-            String filteredAssessmentList = "";
+            String assignmentsPerCourse = "";
             for (AssessmentEntity assessment: mAssessments){
                 if (assessment.getCourseID() == currentCourse.getCourseID())
-                    filteredAssessmentList = filteredAssessmentList + assessment.getAssessmentTitle() + "\n";
+                    assignmentsPerCourse = assignmentsPerCourse + assessment.getAssessmentTitle() + "\n";
             }
-            if (filteredAssessmentList != "")
-                holder.assessmentItemView.setText(filteredAssessmentList);
+            if (assignmentsPerCourse != "")
+                holder.assessmentsItemView.setText(assignmentsPerCourse);
             else
-                holder.assessmentItemView.setVisibility(View.GONE);
+                holder.assessmentsItemView.setVisibility(View.GONE);
 
         } else {
-            holder.courseItemView.setText("no title");
+            holder.coursesItemView.setText("no title");
         }
     }
 
