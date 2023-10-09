@@ -27,10 +27,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-//
-//    public void goToTermList(View view) {
-//        Intent intent = new Intent(MainActivity.this, TermListActivity.class);
-//        startActivity(intent);
-//    }
 }
 
