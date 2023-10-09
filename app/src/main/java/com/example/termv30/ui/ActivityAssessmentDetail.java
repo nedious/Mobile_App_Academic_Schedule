@@ -31,7 +31,7 @@ import java.util.List;
 public class ActivityAssessmentDetail extends AppCompatActivity {
     private Repository repository;
 
-    public static int courseIdAssEditPage = -1;
+    public static int courseIdAssessmentDetail = -1;
     public static int termIdAssEditPage = -1;
 
     int assessmentID;
@@ -49,13 +49,13 @@ public class ActivityAssessmentDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assessment_detail);
         //Set Variables
-        System.out.println(courseIdAssEditPage);
-        courseIdAssEditPage = getIntent().getIntExtra("courseID", -1);
+        System.out.println(courseIdAssessmentDetail);
+        courseIdAssessmentDetail = getIntent().getIntExtra("courseID", -1);
         courseID = getIntent().getIntExtra("courseID", -1);
         assessmentID = getIntent().getIntExtra("assessmentID", -1);
         termIdAssEditPage = getIntent().getIntExtra("termID", -1);
 
-        System.out.println(courseIdAssEditPage);
+        System.out.println(courseIdAssessmentDetail);
 
         //If not creating a new Entity, fills out current fields
         repository = new Repository((getApplication()));

@@ -12,11 +12,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -33,10 +33,14 @@ import com.example.termv30.helper.DateSelection;
 import com.example.termv30.helper.MyReceiver;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ActivityCourseDetail extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -54,34 +58,38 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
     EditText endDate;
     EditText courseNotes;
     Spinner courseStatus;
-    EditText editInstructorName;
-    EditText editInstructorPhone;
-    EditText editInstructorEmail;
-
-    ImageView courseNotesImage;
+    EditText professorName;
+    EditText professorPhone;
+    EditText professorEmail;
 
     CourseEntity currentCourse;
 
-    public static int numAssessments;
+    public static int numberAssessments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_detail);
-        System.out.println(ActivityAssessmentDetail.courseIdAssEditPage);
-        //Set Course Status Spinner Contents
-        setSpinnerContents();
-        //Set Variables
-        Button addAssessmentBtn = (Button) findViewById(R.id.add_button);
+
+        System.out.println(ActivityAssessmentDetail.courseIdAssessmentDetail);
+
+        setSpinnerContents(); //Make course menu of course status
+
+// make variables
+        Button addAssessmentButton = (Button) findViewById(R.id.add_button);
         courseID = getIntent().getIntExtra("courseID", -1);
         termID = getIntent().getIntExtra("termID", -1);
-        //Set variable to return back to correct Course Entity from Assessment
+
+        // below Sets variables to return  to  Course Entity from Assessment Detail
         if (courseID == -1) {
-            courseID = ActivityAssessmentDetail.courseIdAssEditPage;
+            courseID = ActivityAssessmentDetail.courseIdAssessmentDetail;
         }
-        if (termID == -1)
+
+        if (termID == -1) {
             termID = ActivityAssessmentDetail.termIdAssEditPage;
-        //If not creating a new Entity, fills out current fields
+        }
+
+        // below, repository enters fields, so long as its not creating a new Entity.
         repository = new Repository((getApplication()));
         List<CourseEntity> allCourses = repository.getAllCourses();
 
@@ -93,12 +101,12 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
         courseTitle = findViewById(R.id.course_title_editText);
         startDate = findViewById(R.id.course_start_date_editText);
         endDate = findViewById(R.id.course_end_date_editText);
-//        courseNotesImage = findViewById(R.id.course_notes_image);
         courseNotes = findViewById(R.id.course_notes_textEdit);
         courseStatus = findViewById(R.id.spinner_course_status);
-        editInstructorName = findViewById(R.id.professor_name);
-        editInstructorPhone = findViewById(R.id.professor_phone);
-        editInstructorEmail = findViewById(R.id.professor_email);
+
+        professorName = findViewById(R.id.professor_name);
+        professorPhone = findViewById(R.id.professor_phone);
+        professorEmail = findViewById(R.id.professor_email);
 
          if(currentCourse != null){
             courseTitle.setText(currentCourse.getCourseTitle());
@@ -106,17 +114,16 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
             endDate.setText(currentCourse.getEndDate().format(DateHelper.dtf));
             courseNotes.setText(currentCourse.getCourseNotes());
             courseStatus.setSelection(currentCourse.getStatus().ordinal());
-            editInstructorName.setText(currentCourse.getInstructorName());
-            editInstructorPhone.setText(currentCourse.getInstructorPhone());
-            editInstructorEmail.setText(currentCourse.getInstructorEmail());
+            professorName.setText(currentCourse.getInstructorName());
+            professorPhone.setText(currentCourse.getInstructorPhone());
+            professorEmail.setText(currentCourse.getInstructorEmail());
          }
          else {
              getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
-             addAssessmentBtn.setVisibility(View.GONE);
+             addAssessmentButton.setVisibility(View.GONE);
          }
 
-         courseNotes.setVisibility(View.GONE);
-//         courseNotesImage.setVisibility(View.GONE);
+         courseNotes.setVisibility(View.VISIBLE);
 
         //------Set and show associated Assessments-----------------//
         repository = new Repository(getApplication());
@@ -130,35 +137,36 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
             if (assessment.getCourseID() == courseID)
                 filteredAssessmentList.add(assessment);
         }
-        numAssessments = filteredAssessmentList.size();
+
+        numberAssessments = filteredAssessmentList.size();
         adapter.setAssessments(filteredAssessmentList);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                // TODO: @NonNull was added above, delete??
+
                 repository.delete(adapter.getAssessmentAt(viewHolder.getAdapterPosition()));
                 adapter.mAssessments.remove(viewHolder.getAdapterPosition());
                 adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.course_details), "Assessment deleted", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.course_details), "The Assessment Has Been Deleted", Snackbar.LENGTH_LONG);
                 snackbar.show();
             }
         }).attachToRecyclerView(recyclerView);
 
         if (getIntent().getBooleanExtra("courseSaved", false))
-            Toast.makeText(this,"Course Saved",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"The Course Has Been Saved",Toast.LENGTH_LONG).show();
 
         if (getIntent().getBooleanExtra("assessmentSaved", false))
-            Toast.makeText(this,"Assessment Saved",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"The Assessment Has Been Saved",Toast.LENGTH_LONG).show();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_course, menu);
         return true;
     }
@@ -167,11 +175,11 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.share_notes) {
+        if (id == R.id.email_notes) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, courseTitle.getText().toString() + " " + courseNotes.getText().toString());
-            // (Optional) Here we're setting the title of the content
+
             sendIntent.putExtra(Intent.EXTRA_TITLE, courseTitle.getText().toString() + " Notes");
             sendIntent.setType("text/plain");
 
@@ -179,31 +187,68 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
             startActivity(shareIntent);
             return true;
         }
-        if (id == R.id.course_notification_start) {
-            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.course_details), "Notification for Start date Set", Snackbar.LENGTH_LONG);
-            mySnackbar.show();
-            Intent intentStart = new Intent(ActivityCourseDetail.this, MyReceiver.class);
-            intentStart.putExtra("courseAlert"," The Course: '" + courseTitle.getText().toString() + "' start date notification has been set.");
-            PendingIntent senderStart = PendingIntent.getBroadcast(ActivityCourseDetail.this,++numAlert,intentStart, PendingIntent.FLAG_IMMUTABLE);
-            AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
-            long startDateMillis = DateHelper.parseDate(startDate.getText().toString()).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, startDateMillis, senderStart);
+
+//        if (id == R.id.course_notification_start) {
+//            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.course_details), "Notification for Start date Set", Snackbar.LENGTH_LONG);
+//            mySnackbar.show();
+//            Intent intentStart = new Intent(ActivityCourseDetail.this, MyReceiver.class);
+//            intentStart.putExtra("courseAlert"," The Course: '" + courseTitle.getText().toString() + "' start date notification has been set.");
+//            PendingIntent senderStart = PendingIntent.getBroadcast(ActivityCourseDetail.this,++numAlert,intentStart, PendingIntent.FLAG_IMMUTABLE);
+//            AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
+//            long startDateMillis = DateHelper.parseDate(startDate.getText().toString()).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, startDateMillis, senderStart);
+//            return true;
+//        }
+
+        if (item.getItemId() == R.id.course_notification_start) {
+            String dateFromScreen = startDate.getText().toString();
+            String myFormat = "MM/dd/yy";
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            Date myDate = null;
+            try {
+                myDate = sdf.parse(dateFromScreen);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Long trigger = myDate.getTime();
+            Intent intent = new Intent(ActivityCourseDetail.this, MyReceiver.class);
+            intent.putExtra("courseNotification", " The Course: '" + courseTitle.getText().toString() + "' start date notification has been set.");
+            PendingIntent sender=PendingIntent.getBroadcast(ActivityCourseDetail.this,++numAlert, intent,PendingIntent.FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger,sender);
             return true;
         }
-        if (id == R.id.course_notification_end) {
-            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.course_details), "Notification for End date Set", Snackbar.LENGTH_LONG);
-            mySnackbar.show();
-            Intent intentEnd = new Intent(ActivityCourseDetail.this, MyReceiver.class);
-            intentEnd.putExtra("courseAlert","The Course: '" + courseTitle.getText().toString() + "' end date notification has been set.");
-            PendingIntent senderEnd = PendingIntent.getBroadcast(ActivityCourseDetail.this,++numAlert,intentEnd, PendingIntent.FLAG_IMMUTABLE);
-            AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
-            long endDateMillis = DateHelper.parseDate(endDate.getText().toString()).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, endDateMillis, senderEnd);
+
+
+//        if (id == R.id.course_notification_end) {
+//            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.course_details), "Notification for End date Set", Snackbar.LENGTH_LONG);
+//            mySnackbar.show();
+//            Intent intentEnd = new Intent(ActivityCourseDetail.this, MyReceiver.class);
+//            intentEnd.putExtra("courseAlert","The Course: '" + courseTitle.getText().toString() + "' end date notification has been set.");
+//            PendingIntent senderEnd = PendingIntent.getBroadcast(ActivityCourseDetail.this,++numAlert,intentEnd, PendingIntent.FLAG_IMMUTABLE);
+//            AlarmManager alarmManager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
+//            long endDateMillis = DateHelper.parseDate(endDate.getText().toString()).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, endDateMillis, senderEnd);
+//            return true;
+//        }
+
+        if (item.getItemId() == R.id.course_notification_end) {
+            String dateFromScreen = endDate.getText().toString();
+            String myFormat = "MM/dd/yy";
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            Date myDate = null;
+            try {
+                myDate = sdf.parse(dateFromScreen);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Long trigger = myDate.getTime();
+            Intent intent = new Intent(ActivityCourseDetail.this, MyReceiver.class);
+            intent.putExtra("courseNotification", " The Course: '" + courseTitle.getText().toString() + "' start date notification has been set.");
+            PendingIntent sender=PendingIntent.getBroadcast(ActivityCourseDetail.this,++numAlert, intent,PendingIntent.FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger,sender);
             return true;
-        }
-        if (id == R.id.show_notes) {
-            courseNotes.setVisibility(View.VISIBLE);
-//            courseNotesImage.setVisibility(View.VISIBLE);
         }
 
         return super.onOptionsItemSelected(item);
@@ -235,7 +280,7 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
     }
 
     public void goToAssessmentEdit(View view) {
-        if (numAssessments > 4){
+        if (numberAssessments > 4){
             Toast.makeText(this, "Each course can only have a maximum of 5 Assessments", Toast.LENGTH_LONG).show();
             return;
         }
@@ -249,9 +294,9 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
         if (courseTitle.getText().toString().trim().isEmpty() ||
         startDate.getText().toString().trim().isEmpty() ||
         endDate.getText().toString().trim().isEmpty() ||
-        editInstructorName.getText().toString().trim().isEmpty() ||
-        editInstructorPhone.getText().toString().trim().isEmpty() ||
-        editInstructorPhone.getText().toString().trim().isEmpty()) {
+        professorName.getText().toString().trim().isEmpty() ||
+        professorPhone.getText().toString().trim().isEmpty() ||
+        professorPhone.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "All fields must be filled prior to saving Course", Toast.LENGTH_LONG).show();
             return;
         }
@@ -272,9 +317,9 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
                 DateHelper.parseDate(endDate.getText().toString()),
                 CourseStatus.fromString(courseStatus.getSelectedItem().toString()),
                 courseNotes.getText().toString(),
-                editInstructorName.getText().toString(),
-                editInstructorPhone.getText().toString(),
-                editInstructorEmail.getText().toString(),
+                professorName.getText().toString(),
+                professorPhone.getText().toString(),
+                professorEmail.getText().toString(),
                 termID
             );
         repository.insert(course);

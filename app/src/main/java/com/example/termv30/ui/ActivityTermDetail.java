@@ -120,7 +120,7 @@ public class ActivityTermDetail extends AppCompatActivity {
     public void goToCourseEditAssessmentList(View view) {
         Intent intent = new Intent(ActivityTermDetail.this, ActivityCourseDetail.class);
         intent.putExtra("termID", id);
-        ActivityAssessmentDetail.courseIdAssEditPage = -1;
+        ActivityAssessmentDetail.courseIdAssessmentDetail = -1;
         startActivity(intent);
     }
 
