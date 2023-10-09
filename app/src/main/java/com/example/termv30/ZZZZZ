@@ -1,0 +1,56 @@
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
+        // return true;
+//                Intent intent=new Intent(PartDetails.this,MainActivity.class);
+//                startActivity(intent);
+//                return true;
+
+        if (item.getItemId() == R.id.partsave) {
+            Part part;
+            if (partID == -1) {
+                if (repository.getAllParts().size() == 0)
+                    partID = 1;
+                else
+                    partID = repository.getAllParts().get(repository.getAllParts().size() - 1).getPartID() + 1;
+                part = new Part(partID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()), prodID);
+                repository.insert(part);
+            } else {
+                part = new Part(partID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()), prodID);
+                repository.update(part);
+            }
+            return true;
+        }
+        if (item.getItemId() == R.id.share) {
+            Intent sentIntent= new Intent();
+            sentIntent.setAction(Intent.ACTION_SEND);
+            sentIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString()+ "EXTRA_TEXT");
+            sentIntent.putExtra(Intent.EXTRA_TITLE, editNote.getText().toString()+ "EXTRA_TITLE");
+            sentIntent.setType("text/plain");
+            Intent shareIntent=Intent.createChooser(sentIntent,null);
+            startActivity(shareIntent);
+            return true;
+        }
+        if (item.getItemId() == R.id.notify) {
+            String dateFromScreen = editDate.getText().toString();
+            String myFormat = "MM/dd/yy"; //In which you need put here
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            Date myDate = null;
+            try {
+                myDate = sdf.parse(dateFromScreen);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Long trigger = myDate.getTime();
+            Intent intent = new Intent(PartDetails.this, MyReceiver.class);
+            intent.putExtra("key", "message I want to see");
+            PendingIntent sender=PendingIntent.getBroadcast(PartDetails.this,++MainActivity.numAlert, intent,PendingIntent.FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger,sender);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
