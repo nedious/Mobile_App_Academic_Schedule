@@ -101,7 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:onClick="addTermFromScreen"
+                android:onClick="saveTermButton"
                 android:text="Save Term" />
 
             <LinearLayout
@@ -131,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:contentDescription="Add New Course"
-                    android:onClick="goToCourseEditAssessmentList"
+                    android:onClick="addNewCourseButton"
                     android:text="  Add New Course"
                     app:layout_constraintTop_toBottomOf="@+id/recyclerview_course" />
 
