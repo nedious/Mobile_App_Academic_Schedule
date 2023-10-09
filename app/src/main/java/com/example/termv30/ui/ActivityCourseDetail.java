@@ -35,9 +35,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -49,8 +47,6 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
     public static int numAlert;
 
     public static int termID = -1;
-
-    Calendar calendarInstance = Calendar.getInstance();
 
     int courseID;
     EditText courseTitle;
@@ -125,7 +121,7 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
 
          courseNotes.setVisibility(View.VISIBLE);
 
-        //------Set and show associated Assessments-----------------//
+        // display related assessments
         repository = new Repository(getApplication());
         RecyclerView recyclerView = findViewById(R.id.recyclerview_assessment);
         final AdapterAssessment adapter = new AdapterAssessment(this);
@@ -212,7 +208,7 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
             }
             Long trigger = myDate.getTime();
             Intent intent = new Intent(ActivityCourseDetail.this, MyReceiver.class);
-            intent.putExtra("courseNotification", " The Course: '" + courseTitle.getText().toString() + "' start date notification has been set.");
+            intent.putExtra("courseAlert", " The Course: '" + courseTitle.getText().toString() + "' start date notification has been set.");
             PendingIntent sender=PendingIntent.getBroadcast(ActivityCourseDetail.this,++numAlert, intent,PendingIntent.FLAG_IMMUTABLE);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, trigger,sender);
@@ -244,7 +240,7 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
             }
             Long trigger = myDate.getTime();
             Intent intent = new Intent(ActivityCourseDetail.this, MyReceiver.class);
-            intent.putExtra("courseNotification", " The Course: '" + courseTitle.getText().toString() + "' start date notification has been set.");
+            intent.putExtra("courseAlert", " The Course: '" + courseTitle.getText().toString() + "' end date notification has been set.");
             PendingIntent sender=PendingIntent.getBroadcast(ActivityCourseDetail.this,++numAlert, intent,PendingIntent.FLAG_IMMUTABLE);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, trigger,sender);
@@ -255,42 +251,39 @@ public class ActivityCourseDetail extends AppCompatActivity implements AdapterVi
     }
 
     public void setSpinnerContents() {
-        //------Spinner selection options ----//
-        // Spinner element
+        // content of the spinner
         Spinner courseStatusSpinner = (Spinner) findViewById(R.id.spinner_course_status);
 
-        // Spinner click listener
         courseStatusSpinner.setOnItemSelectedListener(this);
 
-        // Spinner Drop down elements
         List<CourseStatus> categories = new ArrayList<CourseStatus>();
         categories.add(CourseStatus.IN_PROGRESS);
         categories.add(CourseStatus.COMPLETED);
         categories.add(CourseStatus.DROPPED);
         categories.add(CourseStatus.PLAN_TO_TAKE);
 
-        // Creating adapter for spinner
+        //  Adaptr  for drop down spinner
         ArrayAdapter<CourseStatus> dataAdapter = new ArrayAdapter<CourseStatus>(this, android.R.layout.simple_spinner_item, categories);
 
-        // Drop down layout style - list view with radio button
+        // layout is Drop-down menu
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        // attaching data adapter to spinner
+        // connect data adapter to spinner
         courseStatusSpinner.setAdapter(dataAdapter);
     }
 
-    public void goToAssessmentEdit(View view) {
-        if (numberAssessments > 4){
-            Toast.makeText(this, "Each course can only have a maximum of 5 Assessments", Toast.LENGTH_LONG).show();
-            return;
-        }
+    public void addAssessmentButton(View view) {
+//        if (numberAssessments > 4){
+//            Toast.makeText(this, "Each course can only have a maximum of 5 Assessments", Toast.LENGTH_LONG).show();
+//            return;
+//        }
         Intent intent = new Intent(ActivityCourseDetail.this, ActivityAssessmentDetail.class);
         intent.putExtra("courseID", courseID);
         intent.putExtra("termID", termID);
         startActivity(intent);
     }
 
-    public void addCourseFromScreen(View view) {
+    public void saveCourseButton(View view) {
         if (courseTitle.getText().toString().trim().isEmpty() ||
         startDate.getText().toString().trim().isEmpty() ||
         endDate.getText().toString().trim().isEmpty() ||
