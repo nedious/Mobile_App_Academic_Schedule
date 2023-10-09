@@ -29,8 +29,8 @@ import java.util.List;
 public class ActivityTermDetail extends AppCompatActivity {
     private Repository repository;
 
-    int id;
-    String title;
+    int termId;
+    String termTitle;
     LocalDate startDate;
     LocalDate endDate;
     EditText editTitle;
@@ -39,24 +39,24 @@ public class ActivityTermDetail extends AppCompatActivity {
 
     TermEntity currentTerm;
 
-    public static int numCourses;
+    public static int numberCourses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_detail);
 
-        Button addCourseBtn = (Button) findViewById(R.id.add_course_button);
+        Button addCourseButton = (Button) findViewById(R.id.add_course_button);
 
-//------Fill Term Edit Fields if editing a Term-----------------//
-        id=getIntent().getIntExtra("termID", -1);
-        if(id == -1)
-            id = ActivityCourseDetail.termID;
+    // if modifying term, autopopulate fields with existing data
+        termId =getIntent().getIntExtra("termID", -1);
+        if(termId == -1)
+            termId = ActivityCourseDetail.termID;
         repository = new Repository(getApplication());
         List<TermEntity> allTerms = repository.getAllTerms();
 
         for(TermEntity term:allTerms){
-            if(term.getTermID() == id)
+            if(term.getTermID() == termId)
                 currentTerm = term;
         }
 
@@ -65,22 +65,22 @@ public class ActivityTermDetail extends AppCompatActivity {
         editEndDate = findViewById(R.id.term_end_date_editText);
 
         if(currentTerm != null){
-            title = currentTerm.getTermTitle();
+            termTitle = currentTerm.getTermTitle();
             startDate = currentTerm.getStartDate();
             endDate = currentTerm.getEndDate();
         }
         else {
-            addCourseBtn.setVisibility(View.GONE);
+            addCourseButton.setVisibility(View.GONE);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
         }
-        if(id != -1){
+        if(termId != -1){
 
-            editTitle.setText(title);
+            editTitle.setText(termTitle);
             editStartDate.setText(startDate.format(DateHelper.dtf));
             editEndDate.setText(endDate.format(DateHelper.dtf));
         }
 
-//------Set and show associated Courses-----------------//
+// display term courses
         repository = new Repository(getApplication());
         RecyclerView recyclerView = findViewById(R.id.recyclerview_course);
         final AdapterCourse adapter = new AdapterCourse(this);
@@ -88,10 +88,10 @@ public class ActivityTermDetail extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         List<CourseEntity> filteredCourseEntityList = new ArrayList<>();
         for(CourseEntity course: repository.getAllCourses()){
-            if (course.getTermID() == id)
+            if (course.getTermID() == termId)
                 filteredCourseEntityList.add(course);
         }
-        numCourses = filteredCourseEntityList.size();
+        numberCourses = filteredCourseEntityList.size();
         adapter.setCourses(filteredCourseEntityList);
         adapter.setAssessments(repository.getAllAssessments());
 
@@ -119,25 +119,25 @@ public class ActivityTermDetail extends AppCompatActivity {
 
     public void addNewCourseButton(View view) {
         Intent intent = new Intent(ActivityTermDetail.this, ActivityCourseDetail.class);
-        intent.putExtra("termID", id);
+        intent.putExtra("termID", termId);
         ActivityAssessmentDetail.courseIdAssessmentDetail = -1;
         startActivity(intent);
     }
 
     public void saveTermButton(View view) {
         if (editTitle.getText().toString().trim().isEmpty() || editStartDate.getText().toString().trim().isEmpty() || editEndDate.getText().toString().isEmpty()) {
-            Toast.makeText(this, "All fields must be filled prior to saving Term", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error: Missing Fields", Toast.LENGTH_LONG).show();
             return;
         }
 
         TermEntity term;
 
-        if (id != -1)
-            term = new TermEntity(id, editTitle.getText().toString(), DateHelper.parseDate(editStartDate.getText().toString()), DateHelper.parseDate(editEndDate.getText().toString()));
+        if (termId != -1)
+            term = new TermEntity(termId, editTitle.getText().toString(), DateHelper.parseDate(editStartDate.getText().toString()), DateHelper.parseDate(editEndDate.getText().toString()));
         else {
             List<TermEntity> allTerms = repository.getAllTerms();
-            id = allTerms.get(allTerms.size() - 1).getTermID();
-            term = new TermEntity(++id, editTitle.getText().toString(), DateHelper.parseDate(editStartDate.getText().toString()), DateHelper.parseDate(editEndDate.getText().toString()));
+            termId = allTerms.get(allTerms.size() - 1).getTermID();
+            term = new TermEntity(++termId, editTitle.getText().toString(), DateHelper.parseDate(editStartDate.getText().toString()), DateHelper.parseDate(editEndDate.getText().toString()));
         }
         repository.insert(term);
 

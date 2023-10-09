@@ -15,7 +15,7 @@ import com.example.termv30.entities.AssessmentEntity;
 
 import java.util.List;
 
-public class AdapterAssessment extends RecyclerView.Adapter<AdapterAssessment.AssessmentViewHolder> {
+public class AdapterAssessment extends RecyclerView.Adapter<AdapterAssessment.AssessmentsViewHolder> {
 
     private final LayoutInflater mInflater;
     private final Context context;
@@ -26,12 +26,12 @@ public class AdapterAssessment extends RecyclerView.Adapter<AdapterAssessment.As
         this.context = context;
     }
 
-    class AssessmentViewHolder extends RecyclerView.ViewHolder {
-        private final TextView assessmentItemView;
+    class AssessmentsViewHolder extends RecyclerView.ViewHolder {
+        private final TextView assessmentsViewItem;
 
-        private AssessmentViewHolder(View itemView){
+        private AssessmentsViewHolder(View itemView){
             super(itemView);
-            assessmentItemView = itemView.findViewById(R.id.item_assessment_list_textView);
+            assessmentsViewItem = itemView.findViewById(R.id.item_assessment_list_textView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -47,21 +47,22 @@ public class AdapterAssessment extends RecyclerView.Adapter<AdapterAssessment.As
         }
     }
 
+    @NonNull
     @Override
-    public AssessmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AssessmentsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.item_assessment_list, parent, false);
-        return new AssessmentViewHolder(itemView);
+        return new AssessmentsViewHolder(itemView);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull AssessmentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AssessmentsViewHolder holder, int position) {
         if (mAssessments != null) {
             final AssessmentEntity currentAssessment = mAssessments.get(position);
-            holder.assessmentItemView.setText(currentAssessment.getAssessmentTitle());
+            holder.assessmentsViewItem.setText(currentAssessment.getAssessmentTitle());
         }
         else {
-            holder.assessmentItemView.setText("No title");
+            holder.assessmentsViewItem.setText("No title");
         }
     }
 
