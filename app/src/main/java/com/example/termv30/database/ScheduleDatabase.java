@@ -67,9 +67,9 @@ public abstract class ScheduleDatabase extends RoomDatabase {
                 mCourseDAO.deleteAllCourses();
                 mAssessmentDAO.deleteAllAssessments();
 
-                mTermDAO.insertAll(DummyData.getSampleTerms());
-                mCourseDAO.insertAll(DummyData.getSampleCourses());
-                mAssessmentDAO.insertAll(DummyData.getSampleAssessments());
+                mTermDAO.insertAll(DummyData.getDummyTerms());
+                mCourseDAO.insertAll(DummyData.getDummyCourses());
+                mAssessmentDAO.insertAll(DummyData.getDummyAssessments());
 
             });
         }

@@ -7,8 +7,8 @@ import java.time.LocalDate;
 public class DateToString {
 
     @TypeConverter
-    public static LocalDate toDate(String dateString) {
-        return dateString == null ? null : LocalDate.parse(dateString);
+    public static LocalDate toDate(String datesString) {
+        return datesString == null ? null : LocalDate.parse(datesString);
     }
 
     @TypeConverter
