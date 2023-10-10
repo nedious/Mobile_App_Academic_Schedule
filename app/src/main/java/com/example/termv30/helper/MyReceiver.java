@@ -23,14 +23,14 @@ public class MyReceiver extends BroadcastReceiver {
         Toast.makeText(context,intent.getStringExtra("courseAlert"),Toast.LENGTH_LONG).show();
 
         createNotificationChannel(context,channel_id);
-        Notification n= new NotificationCompat.Builder(context, channel_id)
+        Notification notification = new NotificationCompat.Builder(context, channel_id)
                 .setSmallIcon(R.drawable.ic_baseline_send_24)
                 .setChannelId(channel_id)
                 .setContentText("Scheduler Alert")
                 .setContentTitle(intent.getStringExtra("courseAlert") + " : Notification ID "+Integer.toString(notificationID)).build();
 
         NotificationManager notificationManager=(NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(notificationID++,n);
+        notificationManager.notify(notificationID++,notification);
     }
     private void createNotificationChannel(Context context, String CHANNEL_ID) {
 
@@ -45,4 +45,6 @@ public class MyReceiver extends BroadcastReceiver {
             notificationManager.createNotificationChannel(channel);
         }
     }
+
+
 }
