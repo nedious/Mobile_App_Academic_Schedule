@@ -25,10 +25,10 @@ public class Repository {
     private int assessmentID;
 
     public Repository(Application application) {
-        ScheduleDatabase db = ScheduleDatabase.getDatabase(application);
-        mTermDAO = db.termDao();
-        mCourseDAO = db.courseDao();
-        mAssessmentDAO = db.assessmentDao();
+        ScheduleDatabase database = ScheduleDatabase.getDatabase(application);
+        mTermDAO = database.termDao();
+        mCourseDAO = database.courseDao();
+        mAssessmentDAO = database.assessmentDao();
 
         try {
             Thread.sleep(1000);
