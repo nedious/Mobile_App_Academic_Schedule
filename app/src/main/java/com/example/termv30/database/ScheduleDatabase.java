@@ -23,19 +23,20 @@ import com.example.termv30.helper.DummyData;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {TermEntity.class, CourseEntity.class, AssessmentEntity.class}, version = 2)
+@Database(entities = {TermEntity.class, CourseEntity.class, AssessmentEntity.class}, version = 2, exportSchema = false)
 @TypeConverters({DateToString.class, CourseStatusToString.class, AssessmentTypeToString.class})
 public abstract class ScheduleDatabase extends RoomDatabase {
     public abstract AssessmentDAO assessmentDao();
     public abstract CourseDAO courseDao();
     public abstract TermDAO termDao();
 
+    private static volatile ScheduleDatabase INSTANCE;
+
     private static final int NUMBER_OF_THREADS = 4;
 
     static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    private static volatile ScheduleDatabase INSTANCE;
 
     static ScheduleDatabase getDatabase(final Context context) {
         if(INSTANCE == null) {
@@ -62,10 +63,6 @@ public abstract class ScheduleDatabase extends RoomDatabase {
             AssessmentDAO mAssessmentDAO = INSTANCE.assessmentDao();
 
             databaseWriteExecutor.execute(() -> {
-
-                mTermDAO.deleteAllTerms();
-                mCourseDAO.deleteAllCourses();
-                mAssessmentDAO.deleteAllAssessments();
 
                 mTermDAO.insertAll(DummyData.getDummyTerms());
                 mCourseDAO.insertAll(DummyData.getDummyCourses());
